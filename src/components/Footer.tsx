@@ -1,8 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 const TEAM = [
-  { role: "Founder", name: "Mithilesh Das" },
-  { role: "Co-founder", name: "Abhishek Chakraborty" },
-  { role: "Co-founder", name: "PranabJyoti Rakshit" },
+  {
+    role: "Founder",
+    name: "Mithilesh Das",
+    linkedin: "https://www.linkedin.com/in/mithilesh-das-18a2b4320",
+  },
+  {
+    role: "Co-founder",
+    name: "Abhishek Chakraborty",
+    linkedin:
+      "https://www.linkedin.com/in/abhishek-chakraborty-best-seo-specialist-silchar",
+  },
+  {
+    role: "Co-founder",
+    name: "PranabJyoti Rakshit",
+    linkedin: "https://www.linkedin.com/in/pranav-rakshit-894a61327",
+  },
 ];
 
 const CONTACT_PHONE = "9864332295";
@@ -46,7 +59,16 @@ export default function Footer() {
           {TEAM.map((m) => (
             <li key={m.name}>
               <span className="credits-role">{m.role}</span>
-              <strong>{m.name}</strong>
+              <a
+                className="linkedin-link"
+                href={m.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${m.name} on LinkedIn (opens in a new tab)`}
+              >
+                <strong>{m.name}</strong>
+                <span className="linkedin-badge" aria-hidden="true">in</span>
+              </a>
             </li>
           ))}
         </ul>
