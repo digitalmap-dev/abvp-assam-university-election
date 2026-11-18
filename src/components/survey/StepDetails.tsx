@@ -39,30 +39,24 @@ export default function StepDetails({ form, onChange }: Props) {
         </div>
         <div className="formrow">
           <label className="field-label" htmlFor="studentPhone">
-            Phone number{" "}
-            <span aria-hidden="true" className="required">
-              *
-            </span>
+            Phone number (optional)
           </label>
           <input
             className="field"
             id="studentPhone"
             name="studentPhone"
-            type="tel"
-            inputMode="numeric"
-            autoComplete="tel-national"
-            minLength={10}
-            maxLength={10}
-            pattern="[6-9][0-9]{9}"
-            placeholder="10-digit mobile number"
-            required
+            type="text"
+            autoComplete="tel"
+            maxLength={40}
+            placeholder="Your phone number"
             value={form.studentPhone}
             onChange={onChange("studentPhone")}
           />
         </div>
       </div>
       <p className="privacy">
-        Both fields are mandatory. Please enter your own contact information.
+        Your name is required; phone number is optional. Please enter your own
+        contact information.
       </p>
 
       <div className="formrow">

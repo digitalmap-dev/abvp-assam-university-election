@@ -120,8 +120,6 @@ export function validateStep(
   if (step === 3) {
     if (form.studentName.trim().length < 2)
       return "Please enter your full name (at least 2 characters).";
-    if (!/^[6-9][0-9]{9}$/.test(form.studentPhone.trim()))
-      return "Please enter a valid 10-digit Indian mobile number.";
     if (!validNumber(form.year, 12) || !validNumber(form.semester, 24))
       return "Please enter a valid year or semester, or leave it blank.";
   }

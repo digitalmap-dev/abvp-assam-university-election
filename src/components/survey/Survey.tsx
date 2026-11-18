@@ -156,7 +156,7 @@ export default function Survey() {
             <h2>Help write the manifesto.</h2>
             <p>
               Start with the campus issues that matter to you. About 3 minutes
-              · Name and phone number required.
+              · Name required.
             </p>
           </div>
 
@@ -209,7 +209,8 @@ export default function Survey() {
             <div className="privacy">
               This is an independent ABVP student feedback initiative, not an
               official Assam University form. When you submit, your responses
-              (including your name and phone number) are sent to and stored by
+              (including your name and any phone number you give) are sent to
+              and stored by
               ABVP Assam University for preparing the manifesto.
             </div>
           </div>

@@ -30,7 +30,7 @@ function clean(body: unknown): SurveyResponse | string {
 
   const r: SurveyResponse = {
     name: str(b.name, 100),
-    phone: str(b.phone, 10),
+    phone: str(b.phone, 40),
     issues,
     otherIssue: str(b.otherIssue, 180),
     ratings,
@@ -45,7 +45,6 @@ function clean(body: unknown): SurveyResponse | string {
   };
 
   if (r.name.length < 2) return "Please enter your full name.";
-  if (!/^[6-9][0-9]{9}$/.test(r.phone)) return "Please enter a valid 10-digit mobile number.";
   if (!r.issues.length && !r.otherIssue) return "Choose at least one issue.";
   if (!r.problem || !r.suggestion) return "Please describe the problem and your suggestion.";
   return r;
