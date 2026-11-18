@@ -1,4 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+import SurveyLink from "./SurveyLink";
+
 export default function Header() {
   return (
     <header>
@@ -10,9 +12,7 @@ export default function Header() {
             <div className="brand-sub">Assam University Unit</div>
           </div>
         </div>
-        <a className="toplink" href="#survey">
-          Share your voice ↗
-        </a>
+        <SurveyLink className="toplink">Share your voice ↗</SurveyLink>
       </div>
     </header>
   );

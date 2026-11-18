@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   EMPTY_FORM,
+  SANITIZERS,
   STEP_COUNT,
   SURVEY_TITLE,
   downloadFile,
@@ -44,8 +45,19 @@ export default function Survey() {
     surveyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [step, review, submitted]);
 
-  const onChange: FieldSetter = (key) => (e) =>
-    setForm((f) => ({ ...f, [key]: e.target.value }));
+  // Remove any "#survey" left in the address bar by older shared links.
+  useEffect(() => {
+    if (window.location.hash) {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  }, []);
+
+  // Each field only keeps the characters it allows (see SANITIZERS).
+  const onChange: FieldSetter = (key) => (e) => {
+    const clean = SANITIZERS[key];
+    const value = clean ? clean(e.target.value) : e.target.value;
+    setForm((f) => ({ ...f, [key]: value }));
+  };
 
   const toggleIssue = (issue: string) =>
     setSelected((s) =>

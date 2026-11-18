@@ -89,7 +89,7 @@ export function toResponse(
 ): SurveyResponse {
   return {
     name: form.studentName.trim(),
-    phone: form.studentPhone.trim(),
+    phone: normalizePhone(form.studentPhone) ?? form.studentPhone.trim(),
     issues: selected,
     otherIssue: form.other.trim(),
     ratings,
@@ -104,8 +104,64 @@ export function toResponse(
   };
 }
 
-const validNumber = (v: string, max: number) =>
-  !v || (Number.isInteger(+v) && +v >= 1 && +v <= max);
+/* ------------------------------------------------------------------ */
+/* Field rules — shared by the browser form and the /api/submit route */
+/* ------------------------------------------------------------------ */
+
+/** Name: letters (any language), spaces, dot, apostrophe, hyphen. */
+export const NAME_PATTERN = /^[\p{L}\p{M}][\p{L}\p{M} .'-]*$/u;
+
+/** Programme / department: letters, digits, spaces and . , & ( ) / - */
+export const COURSE_PATTERN = /^[\p{L}\p{M}0-9 .,&()/-]*$/u;
+
+/**
+ * Character filters applied while the user types, so a field can only ever
+ * contain the kind of characters it is meant for.
+ */
+export const SANITIZERS: Partial<Record<keyof FormValues, (v: string) => string>> = {
+  studentName: (v) => v.replace(/[^\p{L}\p{M} .'-]/gu, "").slice(0, 100),
+  studentPhone: (v) => v.replace(/[^\d+\s-]/g, "").slice(0, 16),
+  year: (v) => v.replace(/\D/g, "").slice(0, 2),
+  semester: (v) => v.replace(/\D/g, "").slice(0, 2),
+  programme: (v) => v.replace(/[^\p{L}\p{M}0-9 .,&()/-]/gu, "").slice(0, 120),
+  dept: (v) => v.replace(/[^\p{L}\p{M}0-9 .,&()/-]/gu, "").slice(0, 120),
+};
+
+/**
+ * Phone is optional. Returns "" when empty, the 10-digit number when valid
+ * (accepts +91 / 91 / 0 prefixes, spaces and hyphens), or null when invalid.
+ */
+export function normalizePhone(value: string): string | null {
+  const compact = value.replace(/[\s-]/g, "");
+  if (!compact) return "";
+  const m = compact.match(/^(?:\+91|91|0)?([6-9]\d{9})$/);
+  return m ? m[1] : null;
+}
+
+export const validNumber = (v: string, max: number) =>
+  !v || (/^\d{1,2}$/.test(v) && +v >= 1 && +v <= max);
+
+/** Checks the student-details fields; returns an error message or "". */
+export function validateDetails(d: {
+  name: string;
+  phone: string;
+  programme: string;
+  department: string;
+  year: string;
+  semester: string;
+}): string {
+  const name = d.name.trim();
+  if (name.length < 2) return "Please enter your full name (at least 2 characters).";
+  if (!NAME_PATTERN.test(name))
+    return "Name can only contain letters, spaces, dots, apostrophes and hyphens.";
+  if (normalizePhone(d.phone) === null)
+    return "Please enter a valid 10-digit mobile number (starting with 6–9), or leave it blank.";
+  if (!COURSE_PATTERN.test(d.programme.trim()) || !COURSE_PATTERN.test(d.department.trim()))
+    return "Programme and department can only contain letters, numbers and . , & ( ) / -";
+  if (!validNumber(d.year, 12)) return "Year of study must be a number from 1 to 12, or left blank.";
+  if (!validNumber(d.semester, 24)) return "Semester must be a number from 1 to 24, or left blank.";
+  return "";
+}
 
 /** Returns an error message for the given step, or "" when it is valid. */
 export function validateStep(
@@ -117,12 +173,15 @@ export function validateStep(
     return "Choose at least one issue or write another issue.";
   if (step === 2 && (!form.problem.trim() || !form.solution.trim()))
     return "Please describe the problem and your suggested solution.";
-  if (step === 3) {
-    if (form.studentName.trim().length < 2)
-      return "Please enter your full name (at least 2 characters).";
-    if (!validNumber(form.year, 12) || !validNumber(form.semester, 24))
-      return "Please enter a valid year or semester, or leave it blank.";
-  }
+  if (step === 3)
+    return validateDetails({
+      name: form.studentName,
+      phone: form.studentPhone,
+      programme: form.programme,
+      department: form.dept,
+      year: form.year,
+      semester: form.semester,
+    });
   return "";
 }
 

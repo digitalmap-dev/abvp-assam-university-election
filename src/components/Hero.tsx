@@ -1,3 +1,5 @@
+import SurveyLink from "./SurveyLink";
+
 export default function Hero() {
   return (
     <section className="hero">
@@ -18,9 +20,9 @@ export default function Hero() {
             needs to change at Assam University — and what you&apos;d like to
             see done better.
           </p>
-          <a className="cta" href="#survey">
+          <SurveyLink className="cta">
             Start the survey <span aria-hidden="true">↗</span>
-          </a>
+          </SurveyLink>
           <span className="under">
             4 short steps · No name or phone number required
           </span>

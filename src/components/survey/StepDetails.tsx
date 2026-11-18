@@ -45,10 +45,11 @@ export default function StepDetails({ form, onChange }: Props) {
             className="field"
             id="studentPhone"
             name="studentPhone"
-            type="text"
+            type="tel"
+            inputMode="tel"
             autoComplete="tel"
-            maxLength={40}
-            placeholder="Your phone number"
+            maxLength={16}
+            placeholder="10-digit mobile number"
             value={form.studentPhone}
             onChange={onChange("studentPhone")}
           />
@@ -98,10 +99,9 @@ export default function StepDetails({ form, onChange }: Props) {
           <input
             className="field"
             id="year"
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={1}
-            max={12}
+            maxLength={2}
             placeholder="e.g. 2"
             value={form.year}
             onChange={onChange("year")}
@@ -114,10 +114,9 @@ export default function StepDetails({ form, onChange }: Props) {
           <input
             className="field"
             id="semester"
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={1}
-            max={24}
+            maxLength={2}
             placeholder="e.g. 3"
             value={form.semester}
             onChange={onChange("semester")}

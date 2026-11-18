@@ -1,4 +1,13 @@
-import { FACILITIES, ISSUES, type SurveyResponse } from "@/components/survey/data";
+import {
+  FACILITIES,
+  ISSUES,
+  normalizePhone,
+  validateDetails,
+  type SurveyResponse,
+} from "@/components/survey/data";
+
+const CAMPUSES = ["Silchar", "Diphu", "Other / affiliated college"];
+const FRAMEWORKS = ["NEP / FYUGP", "CBCS", "Other", "Not sure"];
 
 /**
  * Receives a survey response from the browser, checks it, and forwards it to
@@ -30,7 +39,7 @@ function clean(body: unknown): SurveyResponse | string {
 
   const r: SurveyResponse = {
     name: str(b.name, 100),
-    phone: str(b.phone, 40),
+    phone: str(b.phone, 16),
     issues,
     otherIssue: str(b.otherIssue, 180),
     ratings,
@@ -44,7 +53,13 @@ function clean(body: unknown): SurveyResponse | string {
     department: str(b.department, 120),
   };
 
-  if (r.name.length < 2) return "Please enter your full name.";
+  // Same field rules as the browser form.
+  const detailsError = validateDetails(r);
+  if (detailsError) return detailsError;
+  r.phone = normalizePhone(r.phone) ?? "";
+  if (r.campus && !CAMPUSES.includes(r.campus)) return "Please choose a valid campus.";
+  if (r.academicFramework && !FRAMEWORKS.includes(r.academicFramework))
+    return "Please choose a valid academic framework.";
   if (!r.issues.length && !r.otherIssue) return "Choose at least one issue.";
   if (!r.problem || !r.suggestion) return "Please describe the problem and your suggestion.";
   return r;
