@@ -5,7 +5,7 @@ const TEAM = [
   { role: "Co-founder", name: "PranabJyoti Rakshit" },
 ];
 
-const CONTACT_PHONE = "9864956032";
+const CONTACT_PHONE = "9864332295";
 
 export default function Footer() {
   return (
